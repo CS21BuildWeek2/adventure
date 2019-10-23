@@ -3,6 +3,8 @@
 import os
 from subprocess import run
 import requests
+import urllib
+import json
 from settings import (TOK, AUTH, TREASURE_HUNT, INIT, TO_POST, TAKE, MOVE)
 
 auth = f"""-H "Authorization: Token {TOK}" """
@@ -28,11 +30,11 @@ def init() -> dict():
 
 def move(direction: str) -> dict():
     headers = TO_POST
-    data = {'direction': direction}
+    data_ = {'direction': direction}
+    data = json.dumps(data_)
     response_ = requests.post(f'{TREASURE_HUNT}move/', headers=headers, data=data, verify=True)
-    # response = response_.json()
-    print(response_.headers)
-    return response_
+    response = response_.json()
+    return response
 
 def take(item: str) -> str:
     headers = TO_POST
