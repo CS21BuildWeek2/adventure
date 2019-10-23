@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 TOK = os.getenv('TOKEN')
+TREASURE_HUNT = os.getenv('TREASURE_HUNT')
 INIT = os.getenv('INIT')
 TAKE = os.getenv('TAKE')
 MOVE = os.getenv('MOVE')

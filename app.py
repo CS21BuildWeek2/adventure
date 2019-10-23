@@ -2,6 +2,7 @@
 
 import os
 from typing import Optional
+from subprocess import run
 import requests
 from flask import Flask, jsonify
 
@@ -26,7 +27,7 @@ def create_app():
         print(item)
         response = requests.post(TAKE, headers=TO_POST, data=str(data))
         return str(response)
-
+   
     @app.route('/move/<direction>')
     def move(direction: Optional[str] = None) -> str:
         data = {"direction", direction}
