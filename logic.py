@@ -96,9 +96,9 @@ def goto(start: int, end: int) -> Dict[str, Any]:
     return moved_to
 
 if __name__=='__main__':
-    #while True:
-    #    wandered_to = wander()
-    #    print(f"{wandered_to['room_id']}: {wandered_to['title']}")
+    while True:
+        wandered_to = wander()
+        print(f"{wandered_to['room_id']}: {wandered_to['title']}")
 
-    goto(455, 6)
+    #goto(457,110)
     # goto(323, 433)

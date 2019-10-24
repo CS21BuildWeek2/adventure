@@ -84,6 +84,28 @@ def examine(thing: str) -> Dict[str, Any]:
     response = response_.json()
     return response
 
+def pray() -> Dict[str, Any]:
+    headers = TO_POST
+    response_ = requests.post(f'{TREASURE_HUNT}pray/', headers=headers)
+    response = response_.json()
+    return response
+
+def mine_(new_proof: str) -> Dict[str, Any]:
+    headers = TO_POST
+    data_ = {"proof": new_proof}
+    data = json.dumps(data_)
+    response_ = requests.post(f'{TREASURE_HUNT}mine/', headers=headers, data=data)
+    response = response_.json()
+    return response
+
+def last_proof_() -> Dict[str, Any]:
+    headers = AUTH
+    response_ = requests.get(f'{TREASURE_HUNT}last_proof/', headers=headers)
+    response = response_.json()
+    return response
+
+
+
 #f __name__=='__main__':
 #   #print(move(s))
 #    print(init())
