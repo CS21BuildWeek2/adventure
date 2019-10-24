@@ -139,7 +139,7 @@ def goto(start: int, end: int) -> Dict[str, Any]:
 
         for direction, room_id in directions.items():
             if not room_id:
-                goto_then_move_dir.append((curr, direction))
+                goto_then_move_dir.append((curr_room_id, direction))
                 print('appending a tuple! ', end='')
 
         print(f"backtracking... {moved_to['room_id']}: {moved_to['title']}")
@@ -175,7 +175,7 @@ def wander_smarter() -> Dict[str, Any]:
         return moved_to
 
     except IndexError as e:
-        print('falling back on random ', end='')
+        print('falling back on random. ', end='')
         moved_to = move(choice(exits))
         return moved_to
 
@@ -184,7 +184,7 @@ if __name__=='__main__':
     # goto(344, 112)
     while True:
         wandered_to = wander_smarter()
-        print(f"{wandered_to['room_id']}: {wandered_to['title']}")
+        print(f"wandered to {wandered_to['room_id']}: {wandered_to['title']}")
 
 
     # goto(323, 433)
