@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-from typing import Dict, Any
+from typing import Dict, Any, Tuple, List
 from time import sleep
 from random import choice, sample
 
@@ -17,7 +17,7 @@ Session = sessionmaker()
 Base.metadata.create_all(engine, checkfirst=True)
 
 
-def check_if_db() -> int:
+def check_if_db() -> Tuple[int, List[str]]:
     """ checks if the current room you're in is in the database.
     if not, adds it.
     to be helpful, returns current room id
