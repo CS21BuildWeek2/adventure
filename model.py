@@ -7,12 +7,12 @@ Base = declarative_base()
 
 class Room(Base):
     __tablename__ = 'room'
-    id = Column(Integer, primary_key=True)
-    title =  Column(String(100), nullable=False)
-    description = Column(String(500), nullable=False)
-    elevation = Column(Integer, nullable=False)
-    terrain = Column(String(100))
+    room_id = Column(Integer, primary_key=True)
+    title =  Column(String(200), nullable=False)
     n_to = Column(Integer, nullable=True)
     s_to = Column(Integer, nullable=True)
     w_to = Column(Integer, nullable=True)
     e_to = Column(Integer, nullable=True)
+
+    def __repr__(self) -> str:
+        return f"{self.room_id}: {self.title}"

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+from typing import Dict, Any
 import os
 from subprocess import run
 import requests
@@ -16,19 +16,19 @@ s = 's'
 w = 'w'
 e = 'e'
 
-def status() -> dict():
+def status() -> Dict[str, Any]:
     headers = TO_POST
     response_ = requests.post(f'{TREASURE_HUNT}status/', headers=headers)
     response = response_.json()
     return response
 
-def init() -> dict():
+def init() -> Dict[str, Any]:
     headers = AUTH
     response_ = requests.get(f'{TREASURE_HUNT}init/', headers=headers)
     response = response_.json()
     return response
 
-def move(direction: str) -> dict():
+def move_(direction: str) -> Dict[str, Any]:
     headers = TO_POST
     data_ = {'direction': direction}
     data = json.dumps(data_)
@@ -36,18 +36,18 @@ def move(direction: str) -> dict():
     response = response_.json()
     return response
 
-def take(item: str) -> str:
+def take_(item: str) -> Dict[str, Any]:
     headers = TO_POST
-    data = {
-        "name", item
-    }
-    response = requests.post(TAKE, headers=headers, data=str(data))
-    return response.json()
+    data_ = {"name": item}
+    data = json.dumps(data_)
+    response_ = requests.post(TAKE, headers=headers, data=data)
+    response = response_.json()
+    return response
 
-if __name__=='__main__':
-    #print(move(s))
+#f __name__=='__main__':
+#   #print(move(s))
 #    print(init())
-    x = move(s)
-    y = init()
-    print(type(x))
-    print(type(y))
+#   x = move(s)
+#   y = init()
+#   print(type(x))
+#   print(type(y))
