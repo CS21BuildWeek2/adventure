@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from typing import Optional, List, Dict, TypeVar
+from typing import Optional, List, Dict, TypeVar, Tuple
 A = TypeVar('A')
 from sqlalchemy.orm import Session # type: ignore
 
@@ -41,7 +41,7 @@ class Stack:
         return len(self.stack)
 
 
-def bf_paths(graph: Dict[int, Dict[str, int]], starting_room: int) -> Dict[(int, int), List[str]]:
+def bf_paths(graph: Dict[int, Dict[str, int]], starting_room: int) -> Dict[Tuple[int, int], List[str]]:
     qq = Queue()
     visited = set()
     qq.enqueue([starting_room])
@@ -65,7 +65,7 @@ def bf_paths(graph: Dict[int, Dict[str, int]], starting_room: int) -> Dict[(int,
     paths = {key: val[1:] for key, val in paths.items()}
     return paths
 
-def df_paths(graph: Dict[int, Dict[str, int]], starting_room: int) -> Dict[(int, int), List[str]]:
+def df_paths(graph: Dict[int, Dict[str, int]], starting_room: int) -> Dict[Tuple[int, int], List[str]]:
     ss = Stack()
     visited = set()
     ss.push([starting_room])

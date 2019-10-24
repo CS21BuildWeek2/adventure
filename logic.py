@@ -87,9 +87,9 @@ def goto(start: int, end: int) -> Dict[str, Any]:
     sess = Session(bind=engine)
     graph = make_graph(sess)
     paths = bf_paths(graph, start)
-    print(paths)
+    # print(paths)
     path = paths[(start, end)]
-    print(f"it will take {17 * len(path) / 60} seconds to make {len(path)} moves")
+    print(f"it will take {17 * len(path) / 60} minutes to make {len(path)} moves")
     for direction in path:
         moved_to = move(direction)
         print(f"{moved_to['room_id']}: {moved_to['title']}")
@@ -99,4 +99,6 @@ if __name__=='__main__':
     #while True:
     #    wandered_to = wander()
     #    print(f"{wandered_to['room_id']}: {wandered_to['title']}")
-    goto(433, 10)
+
+    goto(455, 6)
+    # goto(323, 433)

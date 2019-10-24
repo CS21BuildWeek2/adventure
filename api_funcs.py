@@ -36,14 +36,51 @@ def move_(direction: str) -> Dict[str, Any]:
     response = response_.json()
     return response
 
-def move_wise_(direction: str, prev: int) -> Dict[str, Any]:
-    pass
+def move_wise_(direction: str, next_room_id: int) -> Dict[str, Any]:
+    headers = TO_POST
+    data_ = {'direction': direction, "next_room_id": f"{next_room_id}"}
+    data = json.dumps(data_)
+    response_ = requests.post(f'{TREASURE_HUNT}move/', headers=headers, data=data, verify=True)
+    response = response_.json()
+    return response
 
 def take_(item: str) -> Dict[str, Any]:
     headers = TO_POST
     data_ = {"name": item}
     data = json.dumps(data_)
     response_ = requests.post(TAKE, headers=headers, data=data)
+    response = response_.json()
+    return response
+
+def sell_init_(item: str) -> Dict[str, Any]:
+    headers = TO_POST
+    data_ = {"name": item}
+    data = json.dumps(data_)
+    response_ = requests.post(f'{TREASURE_HUNT}sell/', headers=headers, data=data)
+    response = response_.json()
+    return response
+
+def sell_confirm_(item: str) -> Dict[str, Any]:
+    headers = TO_POST
+    data_ = {"name": item, "confirm": "yes"}
+    data = json.dumps(data_)
+    response_ = requests.post(f'{TREASURE_HUNT}sell/', headers=headers, data=data)
+    response = response_.json()
+    return response
+
+def name_change(new_name: str) -> Dict[str, Any]:
+    headers = TO_POST
+    data_ = {"name": f"[{new_name}]", "confirm": "aye"}
+    data = json.dumps(data_)
+    response_ = requests.post(f'{TREASURE_HUNT}change_name/', headers=headers, data=data)
+    response = response_.json()
+    return response
+
+def examine(thing: str) -> Dict[str, Any]:
+    headers = TO_POST
+    data_ = {"name": thing}
+    data = json.dumps(data_)
+    response_ = requests.post(f'{TREASURE_HUNT}examine/', headers=headers, data=data)
     response = response_.json()
     return response
 
