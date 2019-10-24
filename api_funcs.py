@@ -36,6 +36,9 @@ def move_(direction: str) -> Dict[str, Any]:
     response = response_.json()
     return response
 
+def move_wise_(direction: str, prev: int) -> Dict[str, Any]:
+    pass
+
 def take_(item: str) -> Dict[str, Any]:
     headers = TO_POST
     data_ = {"name": item}
