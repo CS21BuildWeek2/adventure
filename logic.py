@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 #
-from typing import Dict, Any, Tuple, List, Optional
+from typing import Dict, Any, Tuple, List, Optional, Set
 from time import sleep
 from random import choice, sample
+from collections import defaultdict
 
 from sqlalchemy import create_engine, exists # type: ignore
 from sqlalchemy.orm.session import Session, sessionmaker # type: ignore
@@ -36,6 +37,7 @@ def check_if_db(room_id: Optional[int] = None, return_exits: bool = False) -> Tu
         i = init()
         sleep(i['cooldown'])
         room = Room(room_id=room_id, title=i['title'])
+        print('ADDING NEW ROOM ', end='')
         sess.add(room)
         sess.commit()
 
@@ -109,6 +111,8 @@ def wander() -> Dict[str, Any]:
     moved_to = move(choice(exits)) # unless they're all explored, then take a random one.
     return moved_to
 
+
+goto_then_move_dir: List[Tuple[int, str]] = list()
 def goto(start: int, end: int) -> Dict[str, Any]:
     sess = Session(bind=engine)
     graph = make_graph(sess)
@@ -126,13 +130,61 @@ def goto(start: int, end: int) -> Dict[str, Any]:
     print(f"it will take roughly under {9 * len(path) / 60} minutes to make {len(path)} moves")
     for direction in path:
         moved_to = move(direction)
-        print(f"{moved_to['room_id']}: {moved_to['title']}")
+        curr_room_id = moved_to['room_id']
+        exits = moved_to['exits']
+        curr_room = sess.query(Room).filter(Room.room_id==curr_room_id).all()[0]
+        directions = dict()
+        for exit in exits:
+            directions[exit] = eval(f'curr_room.{exit}_to')
+
+        for direction, room_id in directions.items():
+            if not room_id:
+                goto_then_move_dir.append((curr, direction))
+                print('appending a tuple! ', end='')
+
+        print(f"backtracking... {moved_to['room_id']}: {moved_to['title']}")
     return moved_to
 
-if __name__=='__main__':
+def wander_smarter() -> Dict[str, Any]:
+    sess = Session(bind=engine)
+    directions: Dict[str, int] = dict()
 
+    curr, exits = check_if_db(return_exits=True)
+    curr_room = sess.query(Room).filter(Room.room_id==curr).all()[0]
+
+    for exit in exits:
+        directions[exit] = eval(f'curr_room.{exit}_to')
+
+    for direction, room_id in directions.items():
+        if not room_id:
+            goto_then_move_dir.append((curr, direction))
+            print('appending a tuple! ', end='')
+           
+    for direction in sample(exits, len(exits)):
+        next_candidate = curr_room.__dict__[f'{direction}_to']
+        if not next_candidate:
+            print('going for an unvisited node! ', end='')
+            moved_to = move(direction)
+            return moved_to
+
+    try:
+        goto_dest, then_move = goto_then_move_dir.pop(0)
+        print('popping from list of tuples. ', end='')
+        goto(curr, goto_dest)
+        moved_to = move(then_move)
+        return moved_to
+
+    except IndexError as e:
+        print('falling back on random ', end='')
+        moved_to = move(choice(exits))
+        return moved_to
+
+
+if __name__=='__main__':
+    # goto(344, 112)
     while True:
-        wandered_to = wander()
+        wandered_to = wander_smarter()
         print(f"{wandered_to['room_id']}: {wandered_to['title']}")
+
 
     # goto(323, 433)
