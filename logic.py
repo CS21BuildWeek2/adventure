@@ -1,15 +1,16 @@
 #!/usr/bin/env python
 #
 from typing import Dict, Any
-from sqlalchemy import create_engine
-from sqlalchemy.orm.session import Session, sessionmaker
-from sqlalchemy import exists
-from sqlalchemy.exc import OperationalError
 from time import sleep
+from random import choice
+
+from sqlalchemy import create_engine, exists # type: ignore
+from sqlalchemy.orm.session import Session, sessionmaker # type: ignore
+from sqlalchemy.exc import OperationalError # type: ignore
+
 from api_funcs import (status, init, move_, take_)
 from model import Room, Base
 from settings import REVERSE
-
 engine = create_engine('sqlite:///map.db')
 Session = sessionmaker()
 Base.metadata.create_all(engine, checkfirst=True)
@@ -22,7 +23,7 @@ def check_if_db() -> int:
     """
     sess = Session(bind=engine)
     i = init()
-    sleep(1)
+    sleep(i['cooldown'])
     room_ = sess.query(Room).filter(Room.room_id==i['room_id'])
 
     if not room_.all():
@@ -36,7 +37,7 @@ def move(direction: str) -> Dict[str, Any]:
     sess = Session(bind=engine)
     prev, _ = check_if_db()
     m = move_(direction)
-    sleep(15)
+    sleep(m['cooldown'])
     curr, _ = check_if_db()
     assert curr==m['room_id']
 
@@ -69,17 +70,22 @@ def move(direction: str) -> Dict[str, Any]:
 
 def wander():
     sess = Session(bind=engine)
-    curr, exits = init()
-    sleep(1)
+    curr, exits = check_if_db()
     # check which exits are unexplored.
+    curr_room = sess.query(Room).filter(Room.room_id==curr).all()[0]
+    for direction in exits:
+        next_candidate = curr_room.__dict__[f'{direction}_to']
+        if not next_candidate:
+            moved_to = move(direction)
+            return moved_to
 
-    # take any unexplored one
+    moved_to = move(choice(exits)) # unless they're all explored, then take a random one.
+    return moved_to
 
-    # unless they're all explored, then take a random one.
+
     pass
 
 if __name__=='__main__':
-   
-    # print(move('s'))
-    # print(move('w'))
-    # print(move('e'))
+    while True:
+        wandered_to = wander()
+        print(f"{wandered_to['room_id']}: {wandered_to['title']}")
