@@ -8,7 +8,7 @@ from sqlalchemy import create_engine, exists # type: ignore
 from sqlalchemy.orm.session import Session, sessionmaker # type: ignore
 from sqlalchemy.exc import OperationalError # type: ignore
 
-from api_funcs import (status, init, move_, take_)
+from api_funcs import (status, init, move_, take_, move_wise_)
 from model import Room, Base
 from settings import REVERSE
 from utils import bf_paths, df_paths, make_graph
@@ -34,15 +34,24 @@ def check_if_db() -> Tuple[int, List[str]]:
     sess.commit()
     return i['room_id'], i['exits']
   
+
 def move(direction: str) -> Dict[str, Any]:
+    """ attempting to move with wisdom """
     sess = Session(bind=engine)
     prev, _ = check_if_db()
-    m = move_(direction)
-    sleep(m['cooldown'])
-    curr, _ = check_if_db()
-    assert curr==m['room_id']
 
     prev_room = sess.query(Room).filter(Room.room_id==prev).all()[0]
+
+    next_room = prev_room.__dict__[f'{direction}_to']
+
+    if next_room:
+        m = move_wise_(direction, next_room)
+    else:
+        m = move_(direction)
+    sleep(m['cooldown'])
+
+    curr, _ = check_if_db()
+    assert curr==m['room_id']
 
     # pardon this awful switch case business, prev_room.__dict__['direction_to'] didn't work.
     if direction == 'n':
@@ -69,6 +78,8 @@ def move(direction: str) -> Dict[str, Any]:
     sess.commit()
     return m
 
+
+
 def wander() -> Dict[str, Any]:
     sess = Session(bind=engine)
     curr, exits = check_if_db()
@@ -89,16 +100,16 @@ def goto(start: int, end: int) -> Dict[str, Any]:
     paths = bf_paths(graph, start)
     # print(paths)
     path = paths[(start, end)]
-    print(f"it will take {17 * len(path) / 60} minutes to make {len(path)} moves")
+    print(f"it will take roughly under {11 * len(path) / 60} minutes to make {len(path)} moves")
     for direction in path:
         moved_to = move(direction)
         print(f"{moved_to['room_id']}: {moved_to['title']}")
     return moved_to
 
 if __name__=='__main__':
+
     while True:
         wandered_to = wander()
         print(f"{wandered_to['room_id']}: {wandered_to['title']}")
 
-    #goto(457,110)
     # goto(323, 433)
