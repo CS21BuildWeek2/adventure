@@ -175,16 +175,14 @@ def wander_smarter() -> Dict[str, Any]:
         return moved_to
 
     except IndexError as e:
-        print('falling back on random. ', end='')
+        print('falling back on a random move. ', end='')
         moved_to = move(choice(exits))
         return moved_to
 
 
 if __name__=='__main__':
-    # goto(344, 112)
-    while True:
-        wandered_to = wander_smarter()
-        print(f"wandered to {wandered_to['room_id']}: {wandered_to['title']}")
-
-
-    # goto(323, 433)
+    goto(437, 109)
+    # goto(128, 397)
+    #while True:
+    #    wandered_to = wander_smarter()
+    #    print(f"wandered to {wandered_to['room_id']}: {wandered_to['title']}")

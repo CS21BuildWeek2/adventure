@@ -5,6 +5,7 @@ load_dotenv()
 
 TOK = os.getenv('TOKEN')
 TREASURE_HUNT = os.getenv('TREASURE_HUNT')
+BC = 'https://lambda-treasure-hunt.herokuapp.com/api/bc/'
 INIT = os.getenv('INIT')
 TAKE = os.getenv('TAKE')
 MOVE = os.getenv('MOVE')

@@ -5,7 +5,7 @@ from subprocess import run
 import requests
 import urllib
 import json
-from settings import (TOK, AUTH, TREASURE_HUNT, INIT, TO_POST, TAKE, MOVE)
+from settings import (TOK, AUTH, TREASURE_HUNT, INIT, TO_POST, TAKE, MOVE, BC)
 
 auth = f"""-H "Authorization: Token {TOK}" """
 content_type_application_json = """-H "Content-Type: application/json" """
@@ -94,13 +94,13 @@ def mine_(new_proof: str) -> Dict[str, Any]:
     headers = TO_POST
     data_ = {"proof": new_proof}
     data = json.dumps(data_)
-    response_ = requests.post(f'{TREASURE_HUNT}mine/', headers=headers, data=data)
+    response_ = requests.post(f'{BC}mine/', headers=headers, data=data)
     response = response_.json()
     return response
 
 def last_proof_() -> Dict[str, Any]:
     headers = AUTH
-    response_ = requests.get(f'{TREASURE_HUNT}last_proof/', headers=headers)
+    response_ = requests.get(f'{BC}last_proof/', headers=headers)
     response = response_.json()
     return response
 
